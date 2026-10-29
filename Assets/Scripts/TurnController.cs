@@ -26,26 +26,14 @@ public class TurnController : Singleton<TurnController>
         }
         Array.Sort(playersInGame, delegate (Player player1, Player player2) { return player1.PlayerIndex.CompareTo(player2.PlayerIndex);});
         playerInControl = playersInGame[0];
-        playerInControl.StartTurn();
+        playerInControl.GetInput();
     }
 
     public void EndTurn()
     {
         turnNumber++;
         playerInControl = playersInGame[Helpers.mod(playerInControl.PlayerIndex + 1, playersInGame.Length)];
-        if (turnNumber <= 60)
-        {
-            playerInControl.StartTurn();
-        }
-        else
-        {
-            float totalRoll = 0;
-            foreach (Player player in playersInGame)
-            {
-                if (player == null) { return; }
-                totalRoll += player.PlayerPosition;
-            }
-        }
+        playerInControl.GetInput();
     }
 
     public void RegisterPlayer(Player player)
