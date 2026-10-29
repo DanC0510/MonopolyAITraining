@@ -3,12 +3,9 @@ using System.IO;
 
 public class Settings : Singleton<Settings>
 {
-    SettingsData data;
-    private int numOfPlayers;
+    public SettingsData data;
 
-    public int NumOfPlayers { get => numOfPlayers; set => numOfPlayers = value; }
-
-    public void Awake()
+    void Start()
     {
         data = new SettingsData();
         data.numOfPlayers = 6;
