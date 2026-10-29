@@ -3,8 +3,9 @@ using UnityEngine;
 
 public class TurnController : Singleton<TurnController>
 {
-    private Player playerInControl;
+    [SerializeField] private Player playerInControl;
     [SerializeField] private Player[] playersInGame;
+    int turnNumber;
 
     public void Start()
     {
@@ -12,14 +13,50 @@ public class TurnController : Singleton<TurnController>
         Debug.Log("Turn Controller initialized");
     }
 
+    public void StartGame()
+    {
+        Debug.Log("Starting game");
+        foreach (Player player in playersInGame)
+        {
+            if (player == null)
+            {
+                Debug.LogError("Not Enough Players in Game");
+                return;
+            }
+        }
+        Array.Sort(playersInGame, delegate (Player player1, Player player2) { return player1.PlayerIndex.CompareTo(player2.PlayerIndex);});
+        playerInControl = playersInGame[0];
+        playerInControl.StartTurn();
+    }
+
+    public void EndTurn()
+    {
+        turnNumber++;
+        playerInControl = playersInGame[Helpers.mod(playerInControl.PlayerIndex + 1, playersInGame.Length)];
+        if (turnNumber <= 60)
+        {
+            playerInControl.StartTurn();
+        }
+        else
+        {
+            float totalRoll = 0;
+            foreach (Player player in playersInGame)
+            {
+                if (player == null) { return; }
+                totalRoll += player.PlayerPosition;
+            }
+        }
+    }
+
     public void RegisterPlayer(Player player)
     {
         for (int i = 0; i < playersInGame.Length; i++)
         {
-            Debug.Log(i);
             if (playersInGame[i] == null)
             {
                 playersInGame[i] = player;
+                player.SetPlayerIndex(i);
+                StartGame();
                 return;
             }
         }
@@ -38,16 +75,4 @@ public class TurnController : Singleton<TurnController>
         }
     }
     
-    public int GetPlayerIndex(Player player)
-    {
-        for (int i = 0; i < playersInGame.Length; i++)
-        {
-            if (playersInGame[i] == player)
-            {
-                return i;
-            }
-        }
-
-        return -1;
-    }
 }

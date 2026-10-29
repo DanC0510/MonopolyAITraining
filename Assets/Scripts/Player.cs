@@ -2,18 +2,32 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    private int playerIndex;
-    
+    [SerializeField] private int playerIndex;
+    [SerializeField] private int playerPosition;
+    private int min = 0;
+    private int max = 6;
+
+    public int PlayerIndex { get => playerIndex; }
+    public int PlayerPosition { get => playerPosition; }
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         TurnController.Instance.RegisterPlayer(this);
-        playerIndex = TurnController.Instance.GetPlayerIndex(this);
+    }
+    
+    public void SetPlayerIndex(int index) { playerIndex = index; }
+
+    public void StartTurn()
+    {
+        Roll();
     }
 
-    // Update is called once per frame
-    void Update()
+    void Roll()
     {
-        
+        int roll1 = Random.Range(max, min);
+        int roll2 = Random.Range(max, min);
+        playerPosition += (roll1 + roll2);
+        TurnController.Instance.EndTurn();
     }
 }
