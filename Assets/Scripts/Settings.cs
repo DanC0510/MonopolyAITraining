@@ -33,7 +33,7 @@ public class Settings : Singleton<Settings>
             Debug.LogError("Settings load failed");
         }
     }
-    
+    [System.Serializable]
     public class SettingsData
     {
         public int numOfPlayers;
